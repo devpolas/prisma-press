@@ -1,0 +1,33 @@
+model Post {
+  id String @id @default(uuid())
+  title String @db.VarChar(255)
+  content String  @db.Text
+  thumbnail String?
+  isFeatured Boolean @default(false)
+  status PostStatus @default(PUBLISHED)
+  isPremium Boolean @default(false)
+  views Int @default(0)
+  authorId String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  tags Tag[]
+  comments Comment[]
+
+  author User @relation(fields: [authorId], references: [id])
+
+  @@index([authorId])
+  @@map("posts")
+}
+
+model Tag {
+  id String @id @default(uuid())
+  name String
+  postId String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("tags")
+}
